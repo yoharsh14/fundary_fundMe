@@ -4,6 +4,7 @@ pragma solidity ^0.8.18;
 
 import {Test, console} from "forge-std/Test.sol";
 import {FundMe} from "../src/FundMe.sol";
+import {DeployFundMe} from "../script/DeployFundMe.s.sol";
 
 contract FundMeTest is Test {
     uint256 number = 1;
@@ -12,7 +13,8 @@ contract FundMeTest is Test {
     function setUp() external {
         // use-> FundMeTest -> FundMe
         // FundMeTest is the owner of fundMe
-        fundMe = new FundMe(address(0x694AA1769357215DE4FAC081bf1f309aDC325306));
+        DeployFundMe deployfundme = new DeployFundMe();
+        fundMe = deployfundme.run();
     }
 
     function testMiniumDollarIsFive() public {
@@ -20,7 +22,10 @@ contract FundMeTest is Test {
     }
 
     function testOwnerIsMsgSender() public {
-        console.log("Address of the deployer of fundMe contract", fundMe.i_owner());
+        console.log(
+            "Address of the deployer of fundMe contract",
+            fundMe.i_owner()
+        );
         console.log("Address of the deployer of this contract", address(this));
         console.log("Our address, we are calling fundMeTest", msg.sender);
         assertEq(fundMe.i_owner(), address(this));
